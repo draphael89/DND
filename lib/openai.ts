@@ -1,13 +1,5 @@
 import OpenAI from 'openai';
 
-console.log('Current working directory:', process.cwd());
-console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('OPENAI_API_KEY defined:', !!process.env.OPENAI_API_KEY);
-if (process.env.OPENAI_API_KEY) {
-  console.log('API Key length:', process.env.OPENAI_API_KEY.length);
-  console.log('API Key first 7 chars:', process.env.OPENAI_API_KEY.substring(0, 7));
-}
-
 if (!process.env.OPENAI_API_KEY) {
   throw new Error('OPENAI_API_KEY is not set in the environment variables');
 }

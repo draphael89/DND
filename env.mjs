@@ -1,7 +1,3 @@
-import { config } from 'dotenv';
-import { expand } from 'dotenv-expand';
-
-const myEnv = config({ path: '.env.local' });
-expand(myEnv);
-
 export {};
+
+// You can add any additional environment variable processing here if needed
