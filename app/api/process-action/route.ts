@@ -63,7 +63,7 @@ export async function POST(request: Request) {
     }
 
     let newScene = content;
-    let effects = { characterUpdates: {}, inventoryChanges: [] };
+    let effects: { characterUpdates: Record<string, number>; inventoryChanges: string[] };
 
     const effectsIndex = content.indexOf('EFFECTS:');
     if (effectsIndex !== -1) {
@@ -72,6 +72,7 @@ export async function POST(request: Request) {
       effects = processEffects(effectsString);
     } else {
       console.warn('No EFFECTS section found in the generated content');
+      effects = { characterUpdates: {}, inventoryChanges: [] };
     }
 
     return NextResponse.json({ 
