@@ -4,9 +4,9 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 10, 10, 27;
+  --background-end-rgb: 30, 30, 63;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -33,10 +33,73 @@ body {
   }
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Spectral:wght@400;600;700&family=Fira+Code&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Spectral:wght@400;600;700&family=Fira+Code&family=MedievalSharp&display=swap');
 
 body {
-  @apply bg-background text-text-primary font-sans;
+  @apply bg-primary-900 text-text-primary font-sans;
 }
 
 /* Your custom styles here */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-shine {
+  animation: shine 8s linear infinite;
+}
+
+/* Day/Night cycle */
+.bg-day {
+  background: linear-gradient(to bottom, #87CEEB, #E0F6FF);
+}
+
+.bg-night {
+  background: linear-gradient(to bottom, #0F2027, #203A43, #2C5364);
+}
+
+/* Fantasy-themed scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: theme('colors.primary.800');
+}
+
+::-webkit-scrollbar-thumb {
+  background: theme('colors.accent.600');
+  border-radius: 6px;
+  border: 3px solid theme('colors.primary.800');
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.accent.500');
+}
+
+/* Textured background */
+.bg-parchment {
+  background-image: url('/images/parchment-texture.png');
+  background-repeat: repeat;
+}
+
+/* Ornate border */
+.border-ornate {
+  border-image: url('/images/ornate-border.png') 30 stretch;
+}

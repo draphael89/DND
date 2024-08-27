@@ -53,7 +53,7 @@ const config: Config = {
       },
       fontFamily: {
         'sans': ['Inter', 'sans-serif'],
-        'display': ['Spectral', 'serif'],
+        'display': ['MedievalSharp', 'cursive'],
         'mono': ['Fira Code', 'monospace'],
       },
       boxShadow: {
@@ -69,12 +69,16 @@ const config: Config = {
       animation: {
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'float': 'float 3s ease-in-out infinite',
+        'shine': 'shine 8s linear infinite',
       },
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-10px)' },
-        }
+        },
+        shine: {
+          'to': { backgroundPosition: '200% center' },
+        },
       },
       backdropFilter: {
         'none': 'none',

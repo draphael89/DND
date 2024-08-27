@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useCharacter } from '../context/CharacterContext';
+import React, { useState } from 'react';
+import { Character } from '../context/CharacterContext';
 
 interface Enemy {
   name: string;
@@ -12,10 +12,10 @@ interface Enemy {
 interface CombatProps {
   enemy: Enemy;
   onCombatEnd: (playerWon: boolean) => void;
+  character: Character;
 }
 
-export default function Combat({ enemy, onCombatEnd }: CombatProps) {
-  const { character } = useCharacter();
+const Combat: React.FC<CombatProps> = ({ enemy, onCombatEnd, character }) => {
   const [playerHealth, setPlayerHealth] = useState(100);
   const [enemyHealth, setEnemyHealth] = useState(enemy.health);
   const [combatLog, setCombatLog] = useState<string[]>([]);
@@ -78,3 +78,5 @@ export default function Combat({ enemy, onCombatEnd }: CombatProps) {
     </div>
   );
 }
+
+export default Combat;

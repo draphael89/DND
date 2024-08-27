@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-interface Character {
+export interface Character {
   race: string;
   class: string;
   background: string;
@@ -16,34 +16,43 @@ interface Character {
   };
 }
 
-interface CharacterContextType {
+export interface CharacterContextType {
   character: Character;
   updateCharacter: (updates: Partial<Character>) => void;
+  isCharacterComplete: boolean;
+  setCharacterComplete: (complete: boolean) => void;
 }
+
+const defaultCharacter: Character = {
+  race: '',
+  class: '',
+  background: '',
+  abilities: {
+    strength: 10,
+    dexterity: 10,
+    constitution: 10,
+    intelligence: 10,
+    wisdom: 10,
+    charisma: 10,
+  },
+};
 
 const CharacterContext = createContext<CharacterContextType | undefined>(undefined);
 
 export function CharacterProvider({ children }: { children: ReactNode }) {
-  const [character, setCharacter] = useState<Character>({
-    race: '',
-    class: '',
-    background: '',
-    abilities: {
-      strength: 10,
-      dexterity: 10,
-      constitution: 10,
-      intelligence: 10,
-      wisdom: 10,
-      charisma: 10,
-    },
-  });
+  const [character, setCharacter] = useState<Character>(defaultCharacter);
+  const [isCharacterComplete, setIsCharacterComplete] = useState(false);
 
   const updateCharacter = (updates: Partial<Character>) => {
     setCharacter((prev) => ({ ...prev, ...updates }));
   };
 
+  const setCharacterComplete = (complete: boolean) => {
+    setIsCharacterComplete(complete);
+  };
+
   return (
-    <CharacterContext.Provider value={{ character, updateCharacter }}>
+    <CharacterContext.Provider value={{ character, updateCharacter, isCharacterComplete, setCharacterComplete }}>
       {children}
     </CharacterContext.Provider>
   );
