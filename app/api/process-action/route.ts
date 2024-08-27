@@ -13,6 +13,14 @@ interface ActionRequest {
 }
 
 export async function POST(request: Request) {
+  if (!process.env.OPENAI_API_KEY) {
+    return NextResponse.json({ error: 'OPENAI_API_KEY is not set' }, { status: 500 });
+  }
+
+  if (!openai) {
+    return NextResponse.json({ error: 'OpenAI client is not initialized' }, { status: 500 });
+  }
+
   try {
     const { character, action, currentScene, rollResult } = await request.json() as ActionRequest & { rollResult: number };
 
@@ -33,7 +41,7 @@ export async function POST(request: Request) {
     3. Hints at possible next actions or decisions the player might take.
     4. Is written in second-person perspective, addressing the player directly.
     
-    The total response should be 4-6 sentences long.`;
+    The total response should be 3-5 sentences long.`;
 
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini", // Changed to gpt-4o-mini for faster processing
