@@ -35,3 +35,15 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 # DND
+
+## Troubleshooting
+
+If you encounter issues with Tailwind CSS classes not being recognized:
+
+1. Ensure that `tailwind.config.ts` is properly configured.
+2. Verify that `postcss.config.js` includes Tailwind CSS as a plugin.
+3. Check that `globals.css` includes the necessary Tailwind directives.
+4. Clear the Next.js cache by deleting the `.next` folder and rebuilding the project.
+5. Update all dependencies to their latest compatible versions.
+
+If problems persist, try temporarily disabling Tailwind to isolate the issue.

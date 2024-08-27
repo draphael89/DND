@@ -1,0 +1,45 @@
+import { NextResponse } from 'next/server';
+import openai from '../../../lib/openai';
+import { generateStory } from '@/lib/openai';
+
+interface Character {
+  race: string;
+  class: string;
+  background: string;
+  abilities: Record<string, number>;
+}
+
+export async function POST(request: Request) {
+  try {
+    const { character } = await request.json() as { character: Character };
+
+    const systemPrompt = `You are an expert Dungeon Master, crafting vivid, immersive opening scenes for role-playing games.`;
+
+    const userPrompt = `Create a captivating 3-sentence opening scene for a ${character.race} ${character.class} with a ${character.background} background. Include:
+1. The character's current situation
+2. A subtle element of tension or mystery
+3. The character's highest ability (${Object.entries(character.abilities).reduce((a, b) => a[1] > b[1] ? a : b)[0]})
+Use second-person perspective.`;
+
+    // Generate backstory and scene concurrently
+    const [backstory, sceneResponse] = await Promise.all([
+      generateStory(character.race, character.class, character.background, character.abilities),
+      openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt }
+        ],
+        max_tokens: 150,
+        temperature: 0.7,
+      })
+    ]);
+
+    const scene = sceneResponse.choices[0].message.content ?? "An error occurred while generating the scene.";
+
+    return NextResponse.json({ scene, backstory });
+  } catch (error: any) {
+    console.error('Error generating initial scene:', error);
+    return NextResponse.json({ error: 'An error occurred during your request.' }, { status: 500 });
+  }
+}

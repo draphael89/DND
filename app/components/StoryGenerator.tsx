@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { io, Socket } from 'socket.io-client';
+import { io } from 'socket.io-client';
 import { motion } from 'framer-motion';
 
 interface ProgressData {
@@ -13,8 +13,12 @@ export default function StoryGenerator() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const socket: Socket = io();
+    const socket = io();
     
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+
     socket.on('generate-progress', (data: ProgressData) => {
       setProgress(data.progress);
     });
@@ -27,7 +31,7 @@ export default function StoryGenerator() {
   const generateStory = async () => {
     setIsLoading(true);
     setError('');
-    const socket: Socket = io();
+    const socket = io();
     socket.emit('generate-start', {});
 
     try {

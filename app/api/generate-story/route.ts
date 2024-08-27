@@ -17,7 +17,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const story = await generateStory(character, currentState, action);
+    const story = await generateStory(character.race, character.class, character.background, character.abilities);
     return NextResponse.json({ story });
   } catch (error) {
     console.error('Error generating story:', error);

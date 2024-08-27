@@ -1,45 +1,51 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { ReactNode } from 'react';
 
 interface GameButtonProps {
   href?: string;
   onClick?: () => void;
   disabled?: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
+  icon?: ReactNode;
 }
 
-export default function GameButton({ href, onClick, disabled, children, className }: GameButtonProps) {
-  const baseClasses = "inline-block bg-gradient-to-r from-accent-600 to-accent-700 text-text-primary text-center font-display py-3 px-6 rounded-full transition-all duration-300 cursor-fantasy relative overflow-hidden";
-  const enabledClasses = "hover:from-accent-500 hover:to-accent-600 hover:shadow-lg transform hover:-translate-y-1";
-  const disabledClasses = "opacity-50 cursor-not-allowed";
-
-  const buttonClasses = `${baseClasses} ${disabled ? disabledClasses : enabledClasses} ${className || ''}`;
+const GameButton: React.FC<GameButtonProps> = ({ href, onClick, disabled, children, className = '', icon }) => {
+  const buttonClasses = `inline-flex items-center justify-center px-6 py-3 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-lg shadow-lg transition-colors ${className}`;
 
   const content = (
     <>
-      <span className="relative z-10">{children}</span>
-      <span className="absolute inset-0 bg-gradient-shine bg-[length:200%_100%] animate-shine" />
+      {icon && <span className="mr-2">{icon}</span>}
+      {children}
     </>
   );
 
-  if (href && !disabled) {
+  if (href) {
     return (
-      <Link href={href} className={buttonClasses}>
-        {content}
+      <Link href={href} passHref>
+        <motion.span
+          className={`${buttonClasses} ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+          whileHover={!disabled ? { scale: 1.05 } : {}}
+          whileTap={!disabled ? { scale: 0.95 } : {}}
+        >
+          {content}
+        </motion.span>
       </Link>
     );
   }
 
   return (
     <motion.button
-      whileHover={disabled ? {} : { scale: 1.05 }}
-      whileTap={disabled ? {} : { scale: 0.95 }}
-      onClick={disabled ? undefined : onClick}
+      onClick={onClick}
       disabled={disabled}
       className={buttonClasses}
+      whileHover={!disabled ? { scale: 1.05 } : {}}
+      whileTap={!disabled ? { scale: 0.95 } : {}}
     >
       {content}
     </motion.button>
   );
-}
+};
+
+export default GameButton;
