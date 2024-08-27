@@ -1,4 +1,25 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# DND - Digital Dungeon Master's Assistant
+
+This project is a Next.js-based web application designed to assist Dungeon Masters in managing their Dungeons & Dragons campaigns.
+
+## Project Overview
+
+DND is a digital tool that streamlines the process of running D&D games by providing:
+
+- Character sheet management
+- Encounter tracking
+- Dice rolling simulation
+- Rule reference lookup
+
+Built with modern web technologies, this app aims to enhance the tabletop RPG experience while maintaining the essence of traditional gameplay.
+
+## Technical Stack
+
+- **Frontend**: Next.js 13+ with App Router
+- **Styling**: Tailwind CSS
+- **State Management**: React Context API
+- **Database**: [Your database choice, e.g., PostgreSQL, MongoDB]
+- **Authentication**: [Your auth solution, e.g., NextAuth.js]
 
 ## Getting Started
 
