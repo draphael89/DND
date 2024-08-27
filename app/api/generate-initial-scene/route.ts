@@ -21,6 +21,12 @@ export async function POST(request: Request) {
   try {
     const { character } = await request.json() as { character: Character };
 
+    // Ensure character has all required properties
+    if (!character || !character.race || !character.class || !character.background || !character.abilities) {
+      console.error('Invalid character data:', character);
+      throw new Error('Invalid character data');
+    }
+
     const systemPrompt = `You are an expert Dungeon Master, crafting vivid, immersive opening scenes for role-playing games.`;
 
     const userPrompt = `Create a captivating 3-sentence opening scene for a ${character.race} ${character.class} with a ${character.background} background. Include:
@@ -45,7 +51,15 @@ Use second-person perspective.`;
 
     const scene = sceneResponse.choices[0].message.content ?? "An error occurred while generating the scene.";
 
-    return NextResponse.json({ scene, backstory });
+    const initialGameState = {
+      character: character,
+      inventory: [],
+      quests: [],
+      sceneHistory: [],
+      currentScene: scene,
+    };
+
+    return NextResponse.json({ initialGameState });
   } catch (error: any) {
     console.error('Error generating initial scene:', error);
     return NextResponse.json({ error: 'An error occurred during your request.' }, { status: 500 });

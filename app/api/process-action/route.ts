@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import openai from '../../../lib/openai';
+import { processEffects } from '../../../lib/gameLogic';
 
 interface ActionRequest {
   character: {
@@ -22,40 +23,62 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { character, action, currentScene, rollResult } = await request.json() as ActionRequest & { rollResult: number };
+    const { action, currentScene, character, sceneHistory } = await request.json();
 
-    const systemPrompt = `You are an expert Dungeon Master, skilled in creating engaging and dynamic scenes based on player actions. Your responses should be vivid, atmospheric, and move the story forward.`;
+    const systemPrompt = `You are an expert Dungeon Master, creating dynamic and branching narratives based on player actions and history.`;
 
     const userPrompt = `
     Current scene: ${currentScene}
-    
-    Character: ${character.race} ${character.class} with a ${character.background} background.
-    Highest ability: ${Object.entries(character.abilities).reduce((a, b) => a[1] > b[1] ? a : b)[0]}
-    
     Player action: ${action}
-    Dice roll result: ${rollResult}
-    
-    Based on the current scene, the character's action, and the dice roll result, create a new scene that:
-    1. Describes the outcome of the action in 2-3 sentences, considering the roll result (1-5: critical failure, 6-10: failure, 11-15: partial success, 16-19: success, 20: critical success).
-    2. Sets up a new situation or challenge in 2-3 sentences.
-    3. Hints at possible next actions or decisions the player might take.
-    4. Is written in second-person perspective, addressing the player directly.
-    
-    The total response should be 3-5 sentences long.`;
+    Character: ${JSON.stringify(character)}
+    Scene history: ${JSON.stringify(sceneHistory)}
+
+    Create a new scene that:
+    1. Resolves the player's action
+    2. Describes the outcome and any changes to the environment
+    3. Sets up new challenges or opportunities
+    4. Suggests possible next actions
+
+    Also, provide a list of effects on the character in the following format:
+    EFFECTS:
+    - hp: +10
+    - mp: -5
+    - xp: +20
+    - inventory: +Health Potion, -Gold Coin
+    `;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini", // Changed to gpt-4o-mini for faster processing
+      model: "gpt-4o-mini",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
       ],
-      max_tokens: 150, // Reduced for faster response
+      max_tokens: 300,
       temperature: 0.7,
     });
 
-    const newScene = response.choices[0].message.content ?? "An error occurred while generating the scene.";
+    const content = response.choices[0].message.content;
+    if (!content) {
+      throw new Error('Failed to generate content');
+    }
 
-    return NextResponse.json({ newScene, rollResult });
+    let newScene = content;
+    let effects = { characterUpdates: {}, inventoryChanges: [] };
+
+    const effectsIndex = content.indexOf('EFFECTS:');
+    if (effectsIndex !== -1) {
+      newScene = content.substring(0, effectsIndex).trim();
+      const effectsString = content.substring(effectsIndex + 8).trim();
+      effects = processEffects(effectsString);
+    } else {
+      console.warn('No EFFECTS section found in the generated content');
+    }
+
+    return NextResponse.json({ 
+      newScene, 
+      characterUpdates: effects.characterUpdates,
+      inventoryChanges: effects.inventoryChanges,
+    });
   } catch (error: any) {
     console.error('Error processing action:', error);
     return NextResponse.json({ error: 'An error occurred while processing your action.' }, { status: 500 });

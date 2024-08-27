@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { CharacterProvider } from './context/CharacterContext';
+import { GameStateProvider } from './context/GameStateContext';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,10 +18,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* ... preload links ... */}
+      </head>
       <body className={inter.className}>
-        <CharacterProvider>
-          {children}
-        </CharacterProvider>
+        <GameStateProvider>
+          <CharacterProvider>
+            {children}
+          </CharacterProvider>
+        </GameStateProvider>
       </body>
     </html>
   );

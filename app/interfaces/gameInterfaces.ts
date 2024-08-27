@@ -19,6 +19,7 @@ export interface Character {
   backstory: string;
   level: number;
   experience: number;
+  maxExperience: number; // Add this line
   hitPoints: number;
   maxHitPoints: number;
   mana: number;

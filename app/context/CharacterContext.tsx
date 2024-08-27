@@ -35,6 +35,7 @@ const defaultCharacter: Character = {
   backstory: '',
   level: 1,
   experience: 0,
+  maxExperience: 100,
   hitPoints: 10,
   maxHitPoints: 10,
   mana: 0,
