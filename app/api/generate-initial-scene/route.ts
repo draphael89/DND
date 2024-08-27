@@ -10,6 +10,14 @@ interface Character {
 }
 
 export async function POST(request: Request) {
+  if (!process.env.OPENAI_API_KEY) {
+    return NextResponse.json({ error: 'OPENAI_API_KEY is not set' }, { status: 500 });
+  }
+
+  if (!openai) {
+    return NextResponse.json({ error: 'OpenAI client is not initialized' }, { status: 500 });
+  }
+
   try {
     const { character } = await request.json() as { character: Character };
 

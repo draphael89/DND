@@ -13,6 +13,14 @@ interface ActionGenerationRequest {
 }
 
 export async function POST(request: Request) {
+  if (!process.env.OPENAI_API_KEY) {
+    return NextResponse.json({ error: 'OPENAI_API_KEY is not set' }, { status: 500 });
+  }
+
+  if (!openai) {
+    return NextResponse.json({ error: 'OpenAI client is not initialized' }, { status: 500 });
+  }
+
   try {
     const { character, currentScene, gameState } = await request.json() as ActionGenerationRequest;
 
@@ -29,7 +37,7 @@ export async function POST(request: Request) {
     
     Game State: ${JSON.stringify(gameState)}
     
-    Based on this information, generate 5 possible actions the player could take. Each action should be relevant to the current situation and utilize the character's unique traits. Format the response as a JSON array of strings, without any additional formatting or explanation.`;
+    Based on this information, generate 4 possible actions the player could take. Each action should be relevant to the current situation and utilize the character's unique traits. Format the response as a JSON array of strings, without any additional formatting or explanation.`;
 
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",

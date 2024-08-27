@@ -3,15 +3,7 @@ const nextConfig = {
   images: {
     domains: ['oaidalleapiprodscus.blob.core.windows.net'],
   },
-  env: {
-    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-  },
-  serverRuntimeConfig: {
-    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-  },
-  publicRuntimeConfig: {
-    OPENAI_API_KEY_DEFINED: !!process.env.OPENAI_API_KEY,
-  },
+  // Remove the env section as it's not needed when using Vercel
 }
 
 module.exports = nextConfig;

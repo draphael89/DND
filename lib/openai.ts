@@ -1,14 +1,22 @@
 import OpenAI from 'openai';
 
-if (!process.env.OPENAI_API_KEY) {
-  throw new Error('OPENAI_API_KEY is not set in the environment variables');
+let openai: OpenAI | null = null;
+
+if (typeof window === 'undefined') {
+  // Server-side
+  if (!process.env.OPENAI_API_KEY) {
+    console.warn('OPENAI_API_KEY is not set in the environment variables');
+  } else {
+    openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+  }
 }
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 export async function generateImage(prompt: string, size: '256x256' | '512x512' | '1024x1024' | '1024x1792' = '1024x1024') {
+  if (!openai) {
+    throw new Error('OpenAI client is not initialized');
+  }
   try {
     const response = await openai.images.generate({
       model: "dall-e-3",
@@ -25,6 +33,9 @@ export async function generateImage(prompt: string, size: '256x256' | '512x512' 
 }
 
 export async function generateStory(race: string, characterClass: string, background: string, abilities: Record<string, number>) {
+  if (!openai) {
+    throw new Error('OpenAI client is not initialized');
+  }
   const prompt = `Create a backstory for a ${race} ${characterClass} with a ${background} background. Their highest ability score is in ${Object.entries(abilities).reduce((a, b) => a[1] > b[1] ? a : b)[0]} and their lowest is in ${Object.entries(abilities).reduce((a, b) => a[1] < b[1] ? a : b)[0]}. The backstory should be about 150 words long and written in second person perspective.`;
 
   try {
